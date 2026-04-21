@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GloVe - Global Vectors for Word Representation</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">GloVe</div>
+            <ul class="nav-links">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#historia" class="nav-link">Historia</a></li>
+                <li><a href="#matematicas" class="nav-link">Matemáticas</a></li>
+                <li><a href="#comparativa" class="nav-link">Comparativa</a></li>
+                <li><a href="#practicas" class="nav-link">Prácticas</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h1>GloVe</h1>
+            <p class="subtitle">Global Vectors for Word Representation</p>
+            <p class="description">Aprende cómo Stanford revolucionó los word embeddings combinando estadísticas globales con aprendizaje automático</p>
+            <div class="hero-meta">
+                <span class="badge">Stanford • 2014</span>
+                <span class="badge">NLP • Machine Learning</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Sección: ¿Qué es GloVe? -->
+        <section class="content-section">
+            <h2>¿Qué es GloVe?</h2>
+            <div class="grid-2">
+                <div class="content-box">
+                    <h3>Definición</h3>
+                    <p><strong>GloVe (Global Vectors for Word Representation)</strong> es un algoritmo de aprendizaje automático que convierte palabras en vectores numéricos (embeddings) donde palabras con significados similares quedan próximas en el espacio vectorial.</p>
+                    <p>Fue desarrollado por <strong>Jeffrey Pennington, Richard Socher y Christopher Manning</strong> en la Universidad de Stanford en 2014.</p>
+                </div>
+                <div class="content-box highlight">
+                    <h3>Idea Central</h3>
+                    <p>El significado de una palabra puede capturarse observando <strong>con qué otras palabras aparece frecuentemente</strong> en un corpus de texto.</p>
+                    <p class="quote">"Cuéntame con quién te juntas y te diré quién eres"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección: Historia -->
+        <section id="historia" class="content-section">
+            <h2>Historia: Del Predecesor a GloVe</h2>
+
+            <!-- Word2Vec -->
+            <div class="timeline-item">
+                <div class="timeline-marker">2013</div>
+                <h3>Word2Vec — El Revolucionario Predecesor</h3>
+                <p><strong>Creadores:</strong> Tomáš Mikolov y equipo en Google</p>
+                <p>Word2Vec fue revolucionario porque logró representar palabras como vectores donde las relaciones semánticas se preservan algebraicamente.</p>
+
+                <div class="code-block">
+                    <strong>Ejemplo clásico:</strong><br>
+                    <code>rey − hombre + mujer ≈ reina</code>
+                </div>
+
+                <div class="grid-2">
+                    <div class="architecture-box">
+                        <h4>CBOW (Continuous Bag of Words)</h4>
+                        <p>Predice una palabra dado su contexto</p>
+                        <p class="flow">contexto → [palabra]</p>
+                    </div>
+                    <div class="architecture-box">
+                        <h4>Skip-gram</h4>
+                        <p>Predice el contexto dada una palabra</p>
+                        <p class="flow">[palabra] → contexto</p>
+                    </div>
+                </div>
+
+                <p>Ambas arquitecturas usan una red neuronal superficial entrenada con ventanas deslizantes de texto.</p>
+            </div>
+
+            <!-- Limitaciones -->
+            <div class="limitation-box">
+                <h3>⚠️ Limitaciones de Word2Vec que GloVe Resolvió</h3>
+                <p><strong>Problema principal:</strong> Word2Vec aprende de ventanas locales de texto (por ejemplo, 5 palabras a izquierda y derecha), pero <strong>nunca usa estadísticas globales del corpus completo</strong>.</p>
+                <p>Procesa el texto frase por frase y "olvida" el contexto global.</p>
+                <p class="solution"><strong>Solución de GloVe:</strong> Construir primero una matriz de co-ocurrencias global y después aprender de ella.</p>
+            </div>
+
+            <!-- GloVe -->
+            <div class="timeline-item">
+                <div class="timeline-marker">2014</div>
+                <h3>GloVe — La Síntesis Inteligente</h3>
+                <p><strong>La innovación:</strong> Combinar estadísticas de co-ocurrencia globales (como LSA) con un objetivo de factorización matricial (como Word2Vec).</p>
+                <p>El resultado: un algoritmo más eficiente, interpretable y con mejores embeddings.</p>
+            </div>
+        </section>
+
+        <!-- Sección: Matemáticas -->
+        <section id="matematicas" class="content-section">
+            <h2>Las Matemáticas de GloVe</h2>
+            <p class="intro-text">Explicaremos paso a paso las fórmulas y conceptos detrás del algoritmo.</p>
+
+            <!-- Paso 1 -->
+            <div class="math-step">
+                <div class="step-number">1</div>
+                <h3>Matriz de Co-ocurrencias X</h3>
+                <p>Se escanea todo el corpus y se construye una matriz donde cada celda representa cuántas veces aparecen dos palabras juntas:</p>
+
+                <div class="formula-box">
+                    <strong>X<sub>ij</sub></strong> = número de veces que la palabra j aparece en el contexto de la palabra i<br>
+                    <strong>X<sub>i</sub></strong> = Σₖ X<sub>ik</sub> = total de palabras en el contexto de i
+                </div>
+
+                <div class="example-table">
+                    <table>
+                        <tr>
+                            <th>Contexto de "hielo"</th>
+                            <th>Frecuencia</th>
+                        </tr>
+                        <tr>
+                            <td>sólido</td>
+                            <td>900</td>
+                        </tr>
+                        <tr>
+                            <td>gas</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td>agua</td>
+                            <td>856</td>
+                        </tr>
+                        <tr>
+                            <td>moda</td>
+                            <td>5</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Paso 2 -->
+            <div class="math-step">
+                <div class="step-number">2</div>
+                <h3>Probabilidades de Co-ocurrencia</h3>
+                <p>Se normaliza para obtener probabilidades:</p>
+
+                <div class="formula-box">
+                    <strong>P(j | i) = X<sub>ij</sub> / X<sub>i</sub></strong>
+                </div>
+
+                <div class="example-table">
+                    <table>
+                        <tr>
+                            <th>Palabra</th>
+                            <th>P(palabra | "hielo")</th>
+                        </tr>
+                        <tr>
+                            <td>sólido</td>
+                            <td>0.500</td>
+                        </tr>
+                        <tr>
+                            <td>agua</td>
+                            <td>0.475</td>
+                        </tr>
+                        <tr>
+                            <td>gas</td>
+                            <td>0.006</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Paso 3 -->
+            <div class="math-step highlight-step">
+                <div class="step-number">3</div>
+                <h3>🔑 El Insight Clave: Razones de Probabilidades</h3>
+                <p>En lugar de usar probabilidades directas, GloVe usa el cociente entre probabilidades para una palabra de prueba k:</p>
+
+                <div class="formula-box">
+                    <strong>Razón = P(k | i) / P(k | j)</strong>
+                </div>
+
+                <p><strong>Ejemplo con i = "hielo", j = "vapor", variando k:</strong></p>
+                <div class="example-table">
+                    <table>
+                        <tr>
+                            <th>Palabra k</th>
+                            <th>P(k | hielo)</th>
+                            <th>P(k | vapor)</th>
+                            <th>Razón</th>
+                            <th>Interpretación</th>
+                        </tr>
+                        <tr>
+                            <td>sólido</td>
+                            <td>0.900</td>
+                            <td>0.001</td>
+                            <td><strong>900</strong></td>
+                            <td>Fuertemente relacionado con hielo</td>
+                        </tr>
+                        <tr>
+                            <td>gas</td>
+                            <td>0.006</td>
+                            <td>0.800</td>
+                            <td><strong>0.0075</strong></td>
+                            <td>Fuertemente relacionado con vapor</td>
+                        </tr>
+                        <tr>
+                            <td>agua</td>
+                            <td>0.856</td>
+                            <td>0.800</td>
+                            <td><strong>1.07</strong></td>
+                            <td>Relacionado con ambos por igual</td>
+                        </tr>
+                        <tr>
+                            <td>moda</td>
+                            <td>0.005</td>
+                            <td>0.001</td>
+                            <td><strong>5</strong></td>
+                            <td>No muy relacionado con ninguno</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="highlight-text">La razón captura relaciones semánticas mejor que las probabilidades solas porque filtra el ruido común.</p>
+            </div>
+
+            <!-- Paso 4 -->
+            <div class="math-step">
+                <div class="step-number">4</div>
+                <h3>La Función Objetivo de GloVe</h3>
+                <p>GloVe busca vectores <strong>w<sub>i</sub></strong> (vector de la palabra i) y <strong>w̃<sub>j</sub></strong> (vector de contexto de j) tales que:</p>
+
+                <div class="formula-box large">
+                    <strong>w<sub>i</sub><sup>T</sup> · w̃<sub>j</sub> ≈ log(X<sub>ij</sub>)</strong>
+                </div>
+
+                <p>La función de pérdida a minimizar es:</p>
+
+                <div class="formula-box large">
+                    <strong>J = Σ<sub>ij</sub> f(X<sub>ij</sub>) · (w<sub>i</sub><sup>T</sup> w̃<sub>j</sub> + b<sub>i</sub> + b̃<sub>j</sub> − log X<sub>ij</sub>)²</strong>
+                </div>
+
+                <div class="parameters">
+                    <p><strong>Donde:</strong></p>
+                    <ul>
+                        <li><strong>b<sub>i</sub>, b̃<sub>j</sub></strong> = términos de sesgo (bias) para cada palabra</li>
+                        <li><strong>f(X<sub>ij</sub>)</strong> = función de ponderación (ver siguiente paso)</li>
+                        <li><strong>log X<sub>ij</sub></strong> = logaritmo de la frecuencia de co-ocurrencia</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Paso 5 -->
+            <div class="math-step">
+                <div class="step-number">5</div>
+                <h3>La Función de Ponderación f(x)</h3>
+                <p>No todos los pares de palabras son igualmente informativos. Esta función evita que pares muy frecuentes dominen el aprendizaje:</p>
+
+                <div class="formula-box large">
+                    <strong>f(x) = (x / x<sub>max</sub>)<sup>α</sup></strong> si x &lt; x<sub>max</sub><br>
+                    <strong>f(x) = 1</strong> si x ≥ x<sub>max</sub>
+                </div>
+
+                <p><strong>Parámetros empíricos encontrados:</strong></p>
+                <ul>
+                    <li><strong>α = 0.75</strong> (controla curvatura)</li>
+                    <li><strong>x<sub>max</sub> = 100</strong> (punto de saturación)</li>
+                </ul>
+
+                <p><strong>Interpretación:</strong> Pares muy raros tienen bajo peso, pares muy frecuentes se "aplanan" para no dominar.</p>
+            </div>
+        </section>
+
+        <!-- Sección: Comparativa -->
+        <section id="comparativa" class="content-section">
+            <h2>Comparativa: Word2Vec vs GloVe</h2>
+
+            <div class="comparison-table">
+                <table>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Word2Vec</th>
+                        <th>GloVe</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Año</strong></td>
+                        <td>2013</td>
+                        <td>2014</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Organización</strong></td>
+                        <td>Google</td>
+                        <td>Stanford</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enfoque</strong></td>
+                        <td>Local (ventanas de contexto)</td>
+                        <td>Global (matriz completa)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estadísticas</strong></td>
+                        <td>Implícitas vía predicción</td>
+                        <td>Explícitas (co-ocurrencias)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Función Objetivo</strong></td>
+                        <td>Predicción (softmax)</td>
+                        <td>Regresión (factorización matricial)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Velocidad</strong></td>
+                        <td>Más rápido en corpus muy grandes</td>
+                        <td>Más eficiente (factoriza una sola vez)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Palabras Raras</strong></td>
+                        <td>Puede perderlas</td>
+                        <td>Las pondera explícitamente con f(x)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Interpretabilidad</strong></td>
+                        <td>Baja (caja negra)</td>
+                        <td>Mayor (objetivo matemático claro)</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sección: Por qué fue importante -->
+        <section class="content-section">
+            <h2>¿Por qué GloVe fue Importante?</h2>
+
+            <div class="importance-grid">
+                <div class="importance-card">
+                    <h3>📊 Mejor Rendimiento</h3>
+                    <p>GloVe superó a Word2Vec en benchmarks de analogías semánticas y similitud de palabras con la misma cantidad de datos de entrenamiento.</p>
+                </div>
+
+                <div class="importance-card">
+                    <h3>🔬 Teoría Sólida</h3>
+                    <p>Combinó lo mejor de dos mundos: estadísticas globales (como LSA) con aprendizaje predictivo (como Word2Vec).</p>
+                </div>
+
+                <div class="importance-card">
+                    <h3>⚡ Eficiencia</h3>
+                    <p>Evita entrenar una red neuronal iterativamente. Factoriza la matriz de co-ocurrencias una sola vez.</p>
+                </div>
+
+                <div class="importance-card">
+                    <h3>🎯 Interpretabilidad</h3>
+                    <p>El objetivo matemático es transparente: aproximar el logaritmo de frecuencias con el producto punto de vectores.</p>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <p><strong>Nota histórica:</strong> Hoy en día ambos han sido superados por modelos contextuales como BERT y GPT (donde el vector de una palabra cambia según el contexto de la oración), pero GloVe sigue siendo una base clásica y muy usada en NLP por su simplicidad y eficiencia.</p>
+            </div>
+        </section>
+
+        <!-- Sección: Prácticas Interactivas -->
+        <section id="practicas" class="content-section">
+            <h2>Prácticas Interactivas</h2>
+            <p class="intro-text">Experimenta con los conceptos de GloVe de forma interactiva.</p>
+
+            <!-- Práctica 1: Función de Ponderación -->
+            <div class="practice-box">
+                <h3>Práctica 1: Función de Ponderación f(x)</h3>
+                <p>Ajusta los parámetros α (alfa) y x<sub>max</sub> para ver cómo cambia la función de ponderación. Observa cómo afectan a los pesos de diferentes frecuencias de co-ocurrencia.</p>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="alpha">α (alpha): <span id="alphaValue">0.75</span></label>
+                        <input type="range" id="alpha" min="0.1" max="1.5" step="0.05" value="0.75">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="xmax">x<sub>max</sub>: <span id="xmaxValue">100</span></label>
+                        <input type="range" id="xmax" min="50" max="300" step="10" value="100">
+                    </div>
+                </div>
+
+                <canvas id="weightingCanvas" width="600" height="300"></canvas>
+
+                <div class="practice-insight">
+                    <p><strong>📌 Insight:</strong> La función de ponderación equilibra la importancia de pares raros (bajo peso) vs. pares frecuentes (peso capped a 1).</p>
+                </div>
+            </div>
+
+            <!-- Práctica 2: Matriz de Co-ocurrencias -->
+            <div class="practice-box">
+                <h3>Práctica 2: Matriz de Co-ocurrencias</h3>
+                <p>Calcula la matriz de co-ocurrencias para un pequeño corpus de palabras. Observa cómo emergen las relaciones semánticas.</p>
+
+                <textarea id="corpusInput" placeholder="Ingresa un corpus de texto. Ejemplo: el gato come pescado el perro come carne el pescado es comida el gato es un animal" class="textarea-input"></textarea>
+
+                <button class="btn-primary" onclick="calculateCooccurrence()">Calcular Matriz</button>
+
+                <div id="cooccurrenceResult" class="result-box" style="display:none;">
+                    <h4>Matriz de Co-ocurrencias:</h4>
+                    <div id="cooccurrenceTable"></div>
+
+                    <h4>Análisis:</h4>
+                    <div id="cooccurrenceAnalysis"></div>
+                </div>
+            </div>
+
+            <!-- Práctica 3: Razones de Probabilidades -->
+            <div class="practice-box">
+                <h3>Práctica 3: Razones de Probabilidades</h3>
+                <p>Calcula las razones P(k|i)/P(k|j) para entender cómo capturan las diferencias semánticas entre palabras.</p>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="word_i">Palabra i:</label>
+                        <input type="text" id="word_i" placeholder="ej: hielo" value="hielo">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="word_j">Palabra j:</label>
+                        <input type="text" id="word_j" placeholder="ej: vapor" value="vapor">
+                    </div>
+
+                    <button class="btn-primary" onclick="calculateRatios()">Calcular Razones</button>
+                </div>
+
+                <div id="ratiosResult" class="result-box" style="display:none;">
+                    <table id="ratiosTable">
+                        <tr>
+                            <th>Palabra k</th>
+                            <th>P(k | i)</th>
+                            <th>P(k | j)</th>
+                            <th>Razón</th>
+                            <th>Tipo de Relación</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Práctica 4: Función Objetivo -->
+            <div class="practice-box">
+                <h3>Práctica 4: Calculadora de Función Objetivo J</h3>
+                <p>Calcula la pérdida J para diferentes pares de palabras. Experimenta con cómo la función de ponderación afecta la pérdida.</p>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="x_ij">X<sub>ij</sub> (frecuencia): <span id="x_ijValue">50</span></label>
+                        <input type="range" id="x_ij" min="1" max="200" step="1" value="50">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="dot_product">w<sub>i</sub><sup>T</sup>·w̃<sub>j</sub> + sesgo: <span id="dotProductValue">3.0</span></label>
+                        <input type="range" id="dot_product" min="0" max="6" step="0.1" value="3.0">
+                    </div>
+
+                    <button class="btn-primary" onclick="calculateLoss()">Calcular Pérdida</button>
+                </div>
+
+                <div id="lossResult" class="result-box" style="display:none;">
+                    <div class="loss-display">
+                        <div class="loss-value">
+                            <strong>Pérdida (J):</strong>
+                            <span id="lossValue">0</span>
+                        </div>
+                        <div class="loss-components">
+                            <p id="lossExplanation"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p><strong>GloVe Explicativo</strong> — Basado en el paper original de Pennington, Socher & Manning (2014)</p>
+            <p>Construido con HTML, CSS y JavaScript puro para GitHub Pages</p>
+            <p><a href="https://github.com/tu-usuario/glove-explicativo" target="_blank">Ver en GitHub</a></p>
+        </div>
+    </footer>
+
+    <script src="js/glove.js"></script>
+    <script src="js/interactive.js"></script>
+</body>
+</html>

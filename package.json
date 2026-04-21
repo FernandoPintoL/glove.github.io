@@ -1,0 +1,32 @@
+{
+  "name": "glove-explicativo",
+  "version": "1.0.0",
+  "description": "Sitio web educativo explicando el algoritmo GloVe (Global Vectors for Word Representation) de Stanford con prácticas interactivas",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "glove",
+    "word-embeddings",
+    "nlp",
+    "machine-learning",
+    "stanford",
+    "word2vec"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.js"],
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/interactive.js"
+    ]
+  }
+}
